@@ -215,7 +215,12 @@ public function checkAuthorization ( $authorization=null ) {
       if (!$this->testKey || $this->testKey != $givenKey) {
         return false;
       }
-      return $this->getUser($userid);
+      $email = $authorization ? \Phi\Tools::str_shift($authorization) : $userid;
+      $authUserLikeJwt = $this->getUser($userid);
+      if (!isset($authUserLikeJwt['email']) || empty(trim($authUserLikeJwt['email']))) {
+        $authUserLikeJwt['email'] = $email;
+      }
+      return $authUserLikeJwt;
       break;
     case "bearer":
       try {
